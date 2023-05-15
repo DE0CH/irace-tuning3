@@ -1,0 +1,7 @@
+instances/*/data/*
+*.pyc
+*.pyo
+*~
+.idea*
+*.pkl
+target_algorithms/surrogate/*/
