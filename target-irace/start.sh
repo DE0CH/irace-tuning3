@@ -1,0 +1,3 @@
+color()(set -o pipefail;"$@" 2>&1>&3|sed $'s,.*,\e[31m&\e[m,'>&2)3>&1
+
+color python3 start.py --pyrfr_wrapper /workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_wrapper.cplex_regions200.par10.random.pkl --pyrfr_model /workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_model.cplex_regions200.par10.random.bin --config_space /workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.pcs --inst_feat_dict /workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/inst_feat_dict.cplex_regions200.par10.random.json --dir . --seed 123
