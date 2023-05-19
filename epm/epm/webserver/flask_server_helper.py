@@ -288,15 +288,15 @@ def parse_args(args):
                         action='store_true', help='Show some more output')
 
     subparser = parser.add_subparsers(dest='action')
-    start = subparser.add_parser('start')
-    start.add_argument('-n', '--nic_name', default=None, type=str,
+    parser.add_argument('-n', '--nic_name', default=None, type=str,
                        dest='nic_name',
                        help='Nic name of the server. E.g. localhost')
-    start.add_argument('--ip', default=None, type=str, dest='ip',
+    parser.add_argument('--ip', default=None, type=str, dest='ip',
                        help='Ip address for daemon')
-    start.add_argument('-p', '--port', default=0, type=int, dest='port',
+    parser.add_argument('-p', '--port', default=0, type=int, dest='port',
                        help='Port of the daemon to use')
 
+    subparser.add_parser('start')
     subparser.add_parser('stop')
     subparser.add_parser('status')
 
