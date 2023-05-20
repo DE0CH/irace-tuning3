@@ -12,8 +12,8 @@ def main():
     parser.add_argument('--pyrfr_model', type=str, help='Path to the target_algorithm.')
     parser.add_argument('--config_space', type=str, help='Path to the configuration space in pcs format.')
     parser.add_argument('--inst_feat_dict', type=str, help='Path to the instance feature dictionary.')
-    parser.add_argument('--seed', type=int, help='Random seed.')
-    parser.add_argument('--dir', type=str, help='Path for the epm server as a unique identifier for the server.', default='.')
+    parser.add_argument('--seed', type=int, help='Random seed.') #TODO: Check how to pass the seed, though it might be unnecessary.
+    parser.add_argument('--dir', type=str, help='Path for the epm server as a unique identifier for the server. It is also the cwd for irace.', default='.')
     parser.add_argument('irace_options', nargs=argparse.REMAINDER, help='Options passed to irace.')
     args = parser.parse_args()
     model_args = [
@@ -27,11 +27,10 @@ def main():
         sys.executable, 
         '-m', 'epm.webserver.g_unicorn_app',
         *model_args,
-        '--idle_time' '10000000000', #FIXME: figure out how to disable timeout
+        '--idle_time', '10000000000', #FIXME: figure out how to disable timeout
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.
         '--dir', args.dir,
     ]
-    print("starting server")
     server = subprocess.Popen(server_args + ['start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) #FIXME: It's not idea to swallow stderr but it's printing a lot of logs to stderr. Should make it print to stdout.
     def wait_to_boot():
         while True:
@@ -45,10 +44,9 @@ def main():
     wait_to_boot()
     irace_args = [
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
-        *args.irace_options,
-        '--target-runner', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'target_runner_cost.py'),
+        *args.irace_options[1:]
     ]
-    irace = subprocess.Popen(irace_args) #TODO: capture and log the data.
+    irace = subprocess.Popen(irace_args, cwd=args.dir) #TODO: capture and log the data.
     irace.wait()
     stopper_args = [
         sys.executable,

@@ -7,7 +7,7 @@ from ConfigSpace.conditions import EqualsCondition, NotEqualsCondition, LessThan
 def check_parameter_name(name):
     check_illegal_character(name)
 
-def convert_from_config_space(config_space):
+def convert_from_config_space(config_space, digit = 4):
     parameters = Parameters()
     for cf_param_name in config_space:
         check_parameter_name(cf_param_name)
@@ -19,11 +19,11 @@ def convert_from_config_space(config_space):
         elif isinstance(cf_param, IntegerHyperparameter):
             param = Integer(cf_param.lower, cf_param.upper, log=cf_param.log)
         elif isinstance(cf_param, FloatHyperparameter):
-            param = Real(cf_param.lower, cf_param.upper, log=cf_param.log)
+            param = Real(cf_param.lower, cf_param.upper, log=cf_param.log, digit=digit)
         else:
             raise NotImplementedError(f"parameter type {type(cf_param)} is currently not supported.")
         
-        parameters.add_parameter(cf_param_name, param)
+        parameters.add_parameter(cf_param_name, param, switch=f"--{cf_param_name} ") #FIXME: this is kind of bad because what if the parameter name is not a valid switch? e.g. it contains a double quote
     
     for name_symbol, condition in translate_conditions(config_space):
         parameters.set_condition(name_symbol.name, condition)

@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Convert pcs to irace",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/convert_pcs_to_irace.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.pcs", "target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.irace.txt"]
+        },
+        {
             "name": "Start target irace",
             "type": "python",
             "request": "launch",
@@ -12,7 +21,35 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/target-irace",
             "justMyCode": true,
-            "args": ["--pyrfr_wrapper", "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_wrapper.cplex_regions200.par10.random.pkl", "--pyrfr_model", "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_model.cplex_regions200.par10.random.bin", "--config_space", "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.pcs", "--inst_feat_dict", "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/inst_feat_dict.cplex_regions200.par10.random.json", "--dir", ".", "--seed", "123"],
+            "args": [
+                "--pyrfr_wrapper",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_wrapper.cplex_regions200.par10.random.pkl",
+                "--pyrfr_model",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/pyrfr_model.cplex_regions200.par10.random.bin",
+                "--config_space",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.pcs",
+                "--inst_feat_dict",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/inst_feat_dict.cplex_regions200.par10.random.json",
+                "--dir",
+                ".",
+                "--seed",
+                "123",
+                "--",
+                "--target-runner", // we can't use target-runner-launcher because there is a bug. When set, I get Error: == irace == targetCmdline '{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}' must contain '{targetRunner}'.
+                "/workspaces/irace-tuning3/target-irace/target_runner_cost.py",
+                "--parameter-file",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/config_space.cplex_regions200.par10.random.irace.txt",
+                "--train-instances-file",
+                "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/meta-instances/train-1.txt",
+                "--train-instances-dir",
+                "/", //FIXME: Cannot set this empty because of a bug in irace parsing the arguments. I remember it being fixed but I don't remember what the correct way is.
+                "--max-experiments",
+                "1008",
+                "--digits",
+                "10",
+                "--bound-max",
+                "1" // need this if there is no bound because we need to keep the lengh of args the same.
+            ],
         },
         {
             "name": "Server Stop",
