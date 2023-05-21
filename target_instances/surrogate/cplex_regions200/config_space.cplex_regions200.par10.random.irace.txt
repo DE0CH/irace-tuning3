@@ -1,0 +1,74 @@
+barrier_algorithm "--barrier_algorithm " c ('0', '1', '2', '3') | TRUE
+barrier_crossover "--barrier_crossover " c ('-1', '0', '1', '2') | TRUE
+barrier_limits_corrections "--barrier_limits_corrections " c ('-1', '0', '1', '4', '16', '64') | TRUE
+barrier_limits_growth "--barrier_limits_growth " r,log (1000000.0000000000, 100000000000000.0000000000) | TRUE
+barrier_ordering "--barrier_ordering " c ('0', '1', '2', '3') | TRUE
+barrier_startalg "--barrier_startalg " c ('1', '2', '3', '4') | TRUE
+emphasis_memory "--emphasis_memory " c ('no') | TRUE
+emphasis_mip "--emphasis_mip " c ('0', '1', '2', '3', '4') | TRUE
+emphasis_numerical "--emphasis_numerical " c ('yes', 'no') | TRUE
+feasopt_mode "--feasopt_mode " c ('0', '1', '2', '3', '4', '5') | TRUE
+lpmethod "--lpmethod " c ('0', '1', '2', '3', '4', '5', '6') | TRUE
+mip_cuts_cliques "--mip_cuts_cliques " c ('-1', '0', '1', '2', '3') | TRUE
+mip_cuts_covers "--mip_cuts_covers " c ('-1', '0', '1', '2', '3') | TRUE
+mip_cuts_disjunctive "--mip_cuts_disjunctive " c ('-1', '0', '1', '2', '3') | TRUE
+mip_cuts_flowcovers "--mip_cuts_flowcovers " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_gomory "--mip_cuts_gomory " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_gubcovers "--mip_cuts_gubcovers " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_implied "--mip_cuts_implied " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_mcfcut "--mip_cuts_mcfcut " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_mircut "--mip_cuts_mircut " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_pathcut "--mip_cuts_pathcut " c ('-1', '0', '1', '2') | TRUE
+mip_cuts_zerohalfcut "--mip_cuts_zerohalfcut " c ('-1', '0', '1', '2') | TRUE
+mip_limits_aggforcut "--mip_limits_aggforcut " i (0, 10) | TRUE
+mip_limits_cutpasses "--mip_limits_cutpasses " c ('-1', '0', '1', '4', '16', '64') | TRUE
+mip_limits_cutsfactor "--mip_limits_cutsfactor " r,log (1.0000000000, 16.0000000000) | TRUE
+mip_limits_gomorycand "--mip_limits_gomorycand " i,log (50, 800) | TRUE
+mip_limits_gomorypass "--mip_limits_gomorypass " c ('0', '1', '4', '16', '64') | TRUE
+mip_limits_submipnodelim "--mip_limits_submipnodelim " i,log (125, 2000) | TRUE
+mip_ordertype "--mip_ordertype " c ('0', '1', '2', '3') | TRUE
+mip_strategy_backtrack "--mip_strategy_backtrack " c ('0.9', '0.99', '0.999', '0.9999', '0.99999', '0.999999') | TRUE
+mip_strategy_bbinterval "--mip_strategy_bbinterval " i,log (1, 1000) | TRUE
+mip_strategy_branch "--mip_strategy_branch " c ('-1', '0', '1') | TRUE
+mip_strategy_dive "--mip_strategy_dive " c ('0', '1', '2', '3') | TRUE
+mip_strategy_file "--mip_strategy_file " c ('0', '1') | TRUE
+mip_strategy_fpheur "--mip_strategy_fpheur " c ('-1', '0', '1', '2') | TRUE
+mip_strategy_heuristicfreq "--mip_strategy_heuristicfreq " c ('-1', '0', '5', '10', '20', '40', '80') | TRUE
+mip_strategy_lbheur "--mip_strategy_lbheur " c ('yes', 'no') | TRUE
+mip_strategy_nodeselect "--mip_strategy_nodeselect " c ('0', '1', '2', '3') | TRUE
+mip_strategy_presolvenode "--mip_strategy_presolvenode " c ('-1', '0', '1', '2') | TRUE
+mip_strategy_probe "--mip_strategy_probe " c ('-1', '0', '1', '2', '3') | TRUE
+mip_strategy_rinsheur "--mip_strategy_rinsheur " c ('-1', '0', '5', '10', '20', '40', '80') | TRUE
+mip_strategy_search "--mip_strategy_search " c ('0', '1', '2') | TRUE
+mip_strategy_startalgorithm "--mip_strategy_startalgorithm " c ('0', '1', '2', '3', '4', '5', '6') | TRUE
+mip_strategy_subalgorithm "--mip_strategy_subalgorithm " c ('0', '1', '2', '3', '4', '5') | TRUE
+mip_strategy_variableselect "--mip_strategy_variableselect " c ('-1', '0', '1', '2', '3', '4') | TRUE
+network_netfind "--network_netfind " c ('1', '2', '3') | TRUE
+network_pricing "--network_pricing " c ('0', '1', '2') | TRUE
+preprocessing_aggregator "--preprocessing_aggregator " c ('-1', '0', '1', '4', '16', '64') | TRUE
+preprocessing_boundstrength "--preprocessing_boundstrength " c ('-1', '0', '1') | TRUE
+preprocessing_coeffreduce "--preprocessing_coeffreduce " c ('0', '1', '2') | TRUE
+preprocessing_dependency "--preprocessing_dependency " c ('-1', '0', '1', '2', '3') | TRUE
+preprocessing_dual "--preprocessing_dual " c ('-1', '0', '1') | TRUE
+preprocessing_fill "--preprocessing_fill " i,log (2, 40) | TRUE
+preprocessing_linear "--preprocessing_linear " c ('0', '1') | TRUE
+preprocessing_numpass "--preprocessing_numpass " c ('-1', '0', '1', '4', '16', '64') | TRUE
+preprocessing_reduce "--preprocessing_reduce " c ('0', '1', '2', '3') | TRUE
+preprocessing_relax "--preprocessing_relax " c ('-1', '0', '1') | TRUE
+preprocessing_repeatpresolve "--preprocessing_repeatpresolve " c ('-1', '0', '1', '2', '3') | TRUE
+preprocessing_symmetry "--preprocessing_symmetry " c ('-1', '0', '1', '2', '3', '4', '5') | TRUE
+read_scale "--read_scale " c ('-1', '0', '1') | TRUE
+sifting_algorithm "--sifting_algorithm " c ('0', '1', '2', '3', '4') | TRUE
+simplex_crash "--simplex_crash " c ('-1', '0', '1') | TRUE
+simplex_dgradient "--simplex_dgradient " c ('0', '1', '2', '3', '4', '5') | TRUE
+simplex_limits_perturbation "--simplex_limits_perturbation " c ('0', '1', '4', '16', '64') | TRUE
+simplex_limits_singularity "--simplex_limits_singularity " i,log (2, 40) | TRUE
+simplex_perturbation_switch "--simplex_perturbation_switch " c ('no', 'yes') | TRUE
+simplex_pgradient "--simplex_pgradient " c ('-1', '0', '1', '2', '3', '4') | TRUE
+simplex_pricing "--simplex_pricing " c ('0', '1', '4', '16', '64') | TRUE
+simplex_refactor "--simplex_refactor " c ('0', '4', '16', '64', '256') | TRUE
+simplex_tolerances_markowitz "--simplex_tolerances_markowitz " r,log (0.0001000000, 0.5000000000) | TRUE
+mip_limits_strongcand "--mip_limits_strongcand " i,log (2, 40) | (mip_strategy_variableselect=='3')
+mip_limits_strongit "--mip_limits_strongit " c ('0', '1', '4', '16', '64') | (mip_strategy_variableselect=='3')
+mip_strategy_order "--mip_strategy_order " c ('yes', 'no') | (mip_ordertype%in%c('1', '2', '3'))
+perturbation_constant "--perturbation_constant " r,log (0.0000000100, 0.0001000000) | (simplex_perturbation_switch=='yes')

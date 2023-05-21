@@ -25,29 +25,34 @@ def main():
 
     server_args = [
         sys.executable, 
-        '-m', 'epm.webserver.g_unicorn_app',
+        '-m', 'epm.webserver.flask_server',
         *model_args,
         '--idle_time', '10000000000', #FIXME: figure out how to disable timeout
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.
         '--dir', args.dir,
     ]
-    server = subprocess.Popen(server_args + ['start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) #FIXME: It's not idea to swallow stderr but it's printing a lot of logs to stderr. Should make it print to stdout.
+    server = subprocess.Popen(server_args + ['start'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT) #FIXME: It's not idea to swallow stderr but it's printing a lot of logs to stderr. Should make it print to stdout.
+    print(shlex.join(server_args + ['start']))
+    server_tee = subprocess.Popen(['tee', os.path.join(args.dir, 'server-log.txt')], stdin=server.stdout, stdout=subprocess.PIPE)
     def wait_to_boot():
         while True:
             try:
-                line = next(server.stderr)
+                line = next(server_tee.stdout)
                 line = line.decode("utf-8")
-                if 'Booting worker with pid' in line:
+                if 'Running on' in line:
                     return
             except StopIteration:
                 raise RuntimeError('Server unexpectedly stopped.')
+            
     wait_to_boot()
     irace_args = [
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
         *args.irace_options[1:]
     ]
-    irace = subprocess.Popen(irace_args, cwd=args.dir) #TODO: capture and log the data.
+    
+    irace = subprocess.Popen(irace_args, cwd=args.dir) #TODO: capture and log the data. For some reason if I try to capture the data here the flask_worker just says ERROR:EPM Worker:Server is not running on 127.0.0.1:41391
     irace.wait()
+
     stopper_args = [
         sys.executable,
         '-m', 'epm.webserver.flask_server',
@@ -71,8 +76,6 @@ def cleanup(stopper_args, server):
         raise RuntimeError('Failed to stop the server.')
     finally:
         server.wait() # Make sure the server is not orphaned.
-        if server.returncode != 0:
-            raise RuntimeError('Server failed.')
 
 
 if __name__ == '__main__':

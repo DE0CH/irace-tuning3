@@ -12,6 +12,6 @@ with open(args.pcs_file, 'r') as f:
     pcs = pcs.read(f)
 
 with open(args.irace_file, 'w') as f:
-    f.write(convert_from_config_space(pcs, digit=args.digit).as_string())
+    f.write(convert_from_config_space(pcs, digit=args.digit).as_string() + '\n')
 
     

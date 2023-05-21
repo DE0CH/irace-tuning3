@@ -31,9 +31,7 @@
                 "--inst_feat_dict",
                 "/workspaces/irace-tuning3/target_algorithms/surrogate/cplex_regions200/inst_feat_dict.cplex_regions200.par10.random.json",
                 "--dir",
-                ".",
-                "--seed",
-                "123",
+                "/workspaces/irace-tuning3/runs/1",
                 "--",
                 "--target-runner", // we can't use target-runner-launcher because there is a bug. When set, I get Error: == irace == targetCmdline '{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}' must contain '{targetRunner}'.
                 "/workspaces/irace-tuning3/target-irace/target_runner_cost.py",
@@ -48,7 +46,9 @@
                 "--digits",
                 "10",
                 "--bound-max",
-                "1" // need this if there is no bound because we need to keep the lengh of args the same.
+                "1", // need this if there is no bound because we need to keep the lengh of args the same.
+                "--seed",
+                "123"
             ],
         },
         {
