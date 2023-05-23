@@ -32,7 +32,6 @@ def main():
         '--dir', args.dir,
     ]
     server = subprocess.Popen(server_args + ['start'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT) #FIXME: It's not idea to swallow stderr but it's printing a lot of logs to stderr. Should make it print to stdout.
-    print(shlex.join(server_args + ['start']))
     server_tee = subprocess.Popen(['tee', os.path.join(args.dir, 'server-log.txt')], stdin=server.stdout, stdout=subprocess.PIPE)
     def wait_to_boot():
         while True:

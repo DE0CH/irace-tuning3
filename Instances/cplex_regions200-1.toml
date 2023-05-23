@@ -9,6 +9,6 @@ parameter_file = "target_instances/surrogate/cplex_regions200/config_space.cplex
 train_instances_file = "target_instances/surrogate/cplex_regions200/train-1.txt"
 test_instances_file = "target_instances/surrogate/cplex_regions200/test-1.txt"
 digits = 10
-max_experiments = 1008
+max_experiments = 2000
 seed = 1288
 is_cost = true # Otherwise it is time
