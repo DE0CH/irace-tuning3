@@ -36,7 +36,6 @@ def main():
         '--test-instances-dir', '/', #FIXME: this is because otherwise it will be relative to the cwd of irace.
         '--digits', str(instance['irace_args']['digits']),
         '--seed', str(seed),
-        '--debug-level', '2'
     ]
 
     if 'max_experiments' in instance['irace_args']:

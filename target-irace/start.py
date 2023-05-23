@@ -9,6 +9,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from watchdog.events import FileCreatedEvent
 from threading import Event
+import pickle
+import requests
 
 class FileCreateHandler(FileSystemEventHandler):
     def __init__(self, flag, file_name):
@@ -48,7 +50,7 @@ def main():
     except OSError:
         pass 
     if os.fork() == 0: #FIXME: Using fork is not ideal, best to use subprocess, but there's a bug when using subprocess. It just stops abitrairly.
-        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > /dev/null 2> /dev/null']) #FIXME: I don't like using shell.
+        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > ./server-log.txt 2>&1']) #FIXME: I don't like using shell.
 
     has_file = Event()
     event_handler = FileCreateHandler(has_file, 'nameserver_creds.pkl')
@@ -58,7 +60,18 @@ def main():
     has_file.wait()
     observer.stop()
     observer.join()
-    
+    with open('nameserver_creds.pkl', 'rb') as f:
+        ip, port, _ = pickle.load(f)
+    while True: #FIXME: We need to poll the server to make sure it is running. This is not ideal. This is because nameserver_creds.pkl is created before the server is actually running. I haven't figured out a way to run a command after everything is ready.
+        try:
+            response = requests.get(f'http://{ip}:{port}/status')
+            if response.status_code == 200:
+                break
+        except:
+            pass
+        finally:
+            time.sleep(0.1)
+
     irace_args = [
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
         *args.irace_options[1:]
