@@ -5,6 +5,18 @@ import sys
 import shlex
 import os
 import time 
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+from watchdog.events import FileCreatedEvent
+from threading import Event
+
+class FileCreateHandler(FileSystemEventHandler):
+    def __init__(self, flag, file_name):
+        self.flag = flag
+        self.file_name = file_name
+    def on_created(self, event):
+        if isinstance(event, FileCreatedEvent) and os.path.basename(os.path.normpath(event.src_path)) == self.file_name:
+            self.flag.set()
 
 def main():
     parser = argparse.ArgumentParser() #FIXME: change these to positional arguments.
@@ -31,26 +43,28 @@ def main():
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.
         '--dir', args.dir,
     ]
-    server = subprocess.Popen(server_args + ['start'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT) #FIXME: It's not idea to swallow stderr but it's printing a lot of logs to stderr. Should make it print to stdout.
-    server_tee = subprocess.Popen(['tee', os.path.join(args.dir, 'server-log.txt')], stdin=server.stdout, stdout=subprocess.PIPE)
-    def wait_to_boot():
-        while True:
-            try:
-                line = next(server_tee.stdout)
-                line = line.decode("utf-8")
-                if 'Running on' in line:
-                    return
-            except StopIteration:
-                raise RuntimeError('Server unexpectedly stopped.')
-            
-    wait_to_boot()
+    try:
+        os.remove('./nameserver_creds.pkl')
+    except OSError:
+        pass 
+    if os.fork() == 0: #FIXME: Using fork is not ideal, best to use subprocess, but there's a bug when using subprocess. It just stops abitrairly.
+        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > /dev/null 2> /dev/null']) #FIXME: I don't like using shell.
+
+    has_file = Event()
+    event_handler = FileCreateHandler(has_file, 'nameserver_creds.pkl')
+    observer = Observer()
+    observer.schedule(event_handler, '.', recursive=False)
+    observer.start()
+    has_file.wait()
+    observer.stop()
+    observer.join()
+    
     irace_args = [
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
         *args.irace_options[1:]
     ]
     
-    irace = subprocess.Popen(irace_args, cwd=args.dir) #TODO: capture and log the data. For some reason if I try to capture the data here the flask_worker just says ERROR:EPM Worker:Server is not running on 127.0.0.1:41391
-    irace.wait()
+    irace = subprocess.run(irace_args, cwd=args.dir) #TODO: capture and log the data. For some reason if I try to capture the data here the flask_worker just says ERROR:EPM Worker:Server is not running on 127.0.0.1:41391
 
     stopper_args = [
         sys.executable,
@@ -60,22 +74,9 @@ def main():
         '--dir', args.dir,
         'stop'
     ]
-    try:
-        if irace.returncode != 0:
-            raise RuntimeError('irace failed.')
-    finally:
-        cleanup(stopper_args, server)
-
-def cleanup(stopper_args, server):
     stopper = subprocess.run(stopper_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    try:
-        stopper.check_returncode()
-    except:
-        server.kill() # The stopper failed so we need to kill the server.
-        raise RuntimeError('Failed to stop the server.')
-    finally:
-        server.wait() # Make sure the server is not orphaned.
-
+    if irace.returncode != 0:
+        raise RuntimeError('irace failed.')
 
 if __name__ == '__main__':
     exit(main())

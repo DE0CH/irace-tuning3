@@ -5,7 +5,7 @@ import argparse
 
 def main():
     configuration_id = int(sys.argv[1])
-    instance_id = int(sys.argv[2])
+    instance_id = sys.argv[2]
     seed = int(sys.argv[3])
     instance = sys.argv[4]
     bound_max = int(sys.argv[5])
