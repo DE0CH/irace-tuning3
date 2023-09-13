@@ -2,7 +2,6 @@ import sys
 import os
 from gunicorn import util, debug
 from gunicorn.app.base import BaseApplication
-from gunicorn.six import iteritems
 from .flask_server import create_app
 from .flask_server_helper import parse_args, store_credentials,\
     retrieve_host_port
@@ -35,9 +34,9 @@ class EpmGUnicornApplication(BaseApplication):
         super(EpmGUnicornApplication, self).__init__()
 
     def load_config(self):
-        config = dict([(key, value) for key, value in iteritems(self.options)
+        config = dict([(key, value) for key, value in self.options.items()
                        if key in self.cfg.settings and value is not None])
-        for key, value in iteritems(config):
+        for key, value in config.items():
             self.cfg.set(key.lower(), value)
 
     def load(self):

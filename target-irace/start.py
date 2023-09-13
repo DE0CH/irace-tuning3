@@ -39,7 +39,7 @@ def main():
 
     server_args = [
         sys.executable, 
-        '-m', 'epm.webserver.flask_server',
+        '-m', 'epm.webserver.g_unicorn_app',
         *model_args,
         '--idle_time', '10000000000', #FIXME: figure out how to disable timeout
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.

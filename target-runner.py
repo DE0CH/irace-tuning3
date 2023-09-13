@@ -4,6 +4,15 @@ import toml
 import os
 import sys
 import subprocess
+import rpy2.robjects as robjects
+
+def extract_from_logfile(logfile):
+    robjects.r('library(irace)')
+    get_mean = robjects.r('''function (x) {
+        ireaceResults <- read_logfile(x);
+        mean(ireaceResults$testing$experiment)
+    }''')
+    return float(get_mean(logfile)[0])
 
 def get_abs_path(path): 
     return os.path.abspath(path)
@@ -47,8 +56,9 @@ def main():
     start_py_path = get_abs_path('target-irace/start.py')
     os.makedirs(os.path.join(settings['run_dir'], run_name), exist_ok=True)
     target_irace = subprocess.Popen([sys.executable, start_py_path, *target_args], cwd=os.path.join(settings['run_dir'], run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    subprocess.Popen(['tee', os.path.join(settings['run_dir'], run_name, 'irace-log.txt')], stdin=target_irace.stdout)
+    subprocess.Popen(['tee', os.path.join(settings['run_dir'], run_name, 'irace-log.txt')], stdout=subprocess.DEVNULL, stdin=target_irace.stdout)
     target_irace.wait()
+    print(extract_from_logfile(os.path.join(settings['run_dir'], run_name, 'irace.Rdata')))
 
 
 if __name__ == '__main__':
