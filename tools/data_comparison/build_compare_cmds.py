@@ -42,13 +42,14 @@ with open(args.instances_file, encoding='utf-8') as f:
 with open(os.path.join(args.output_dir, 'cmds.sh'), 'w', encoding='utf-8') as f:
     f.write('#!/bin/bash\n')
     f.write('\n')
+    f.write('set -e\n')
     model_args = [
         '--pyrfr_wrapper', pyrfr_wrapper,
         '--pyrfr_model', pyrfr_model,
         '--config_space', config_space,
         '--inst_feat_dict', inst_feat_dict,
     ]
-    f.write('rm ./nameserver_creds.pkl\n')
+    f.write('rm ./nameserver_creds.pkl || true\n')
     f.write(shlex.join([
         'python',
         '-m', 'epm.webserver.flask_server',
