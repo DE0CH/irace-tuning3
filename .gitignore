@@ -221,6 +221,9 @@ docs/_build/
 
 # Project Specific Stuff
 *.zip
+*.tar.gz
 target_algorithms
 runs
 debugging/run
+cplex_regions200
+irace.Rdata

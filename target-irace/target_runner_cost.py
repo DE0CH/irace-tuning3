@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# TODO: startup time of this is way too slow, find a way to speed it up.
 import epm.webserver.flask_worker
 import sys
 import argparse
