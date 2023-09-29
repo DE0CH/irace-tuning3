@@ -27,7 +27,7 @@ def main(original_file, output_file, target_runner, do_correct_switch=True):
                 ]
                 predicted_time = epm.webserver.flask_worker.send_procedure(new_args)[0][0]
                 print(f'{correct_time} {predicted_time}')
-                wf.write(f'{correct_time} {predicted_time}')
+                wf.write(f'{correct_time} {predicted_time}\n')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('original_file')
