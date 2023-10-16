@@ -1,6 +1,7 @@
 import argparse
 import json
 import epm.webserver.flask_worker
+import subprocess
 
 
 def correct_switch(s: str):
@@ -19,13 +20,14 @@ def main(original_file, output_file, target_runner, do_correct_switch=True):
                 instance = o['instance']
                 config = [(k if not do_correct_switch else correct_switch(k), v) for k, v in o['config'].items()]
                 new_args = [
-                    '--dir', '.',
-                    '--instance_name', instance, # We ignore the first two slashes as a workaround.
-                    '--cutoff', '1000000000000', #TODO: Figure out how to set this to inf
-                    '--seed', str(seed),
+                    '',
+                    '',
+                    str(seed),
+                    '//' + instance, # We ignore add two slashes as a workaround.
+                    '',
                     *[item for sublist in config for item in sublist]
                 ]
-                predicted_time = epm.webserver.flask_worker.send_procedure(new_args)[0][0]
+                predicted_time = float(subprocess.check_output(['target_runner', *new_args]))
                 print(f'{correct_time} {predicted_time}')
                 wf.write(f'{correct_time} {predicted_time}\n')
 if __name__ == '__main__':
