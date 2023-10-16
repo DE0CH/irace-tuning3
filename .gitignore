@@ -227,3 +227,6 @@ runs
 debugging/run
 cplex_regions200
 irace.Rdata
+nameserver_creds.pkl
+nameserver_creds/
+server.pid
