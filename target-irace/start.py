@@ -50,7 +50,7 @@ def main():
     except OSError:
         pass 
     if os.fork() == 0: #FIXME: Using fork is not ideal, best to use subprocess, but there's a bug when using subprocess. It just stops abitrairly.
-        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > ./server-log.txt 2>&1 & echo $! > ./server.pid']) #FIXME: I don't like using shell.
+        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > ./server-log.log 2>&1 & echo $! > ./server.pid']) #FIXME: I don't like using shell.
 
     has_file = Event()
     event_handler = FileCreateHandler(has_file, 'nameserver_creds.pkl')

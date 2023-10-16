@@ -58,7 +58,7 @@ with open(os.path.join(args.output_dir, 'cmds.sh'), 'w', encoding='utf-8') as f:
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.
         '--dir', '.',
         'start',
-    ])+' > ./server-log.txt 2>&1 & echo $! > ./server.pid\n')
+    ])+' > ./server-log.log 2>&1 & echo $! > ./server.pid\n')
     f.write(shlex.join([
         'python',
         os.path.relpath(os.path.join(args.data_comparison_dir, 'wait_for_server.py'), start=args.output_dir),
