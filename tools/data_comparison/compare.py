@@ -27,7 +27,7 @@ def main(original_file, output_file, target_runner, do_correct_switch=True):
                     '',
                     *[item for sublist in config for item in sublist]
                 ]
-                predicted_time = float(subprocess.check_output(['target_runner', *new_args]))
+                predicted_time = float(subprocess.check_output([target_runner, *new_args]))
                 print(f'{correct_time} {predicted_time}')
                 wf.write(f'{correct_time} {predicted_time}\n')
 if __name__ == '__main__':
