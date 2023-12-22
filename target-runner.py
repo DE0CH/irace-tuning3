@@ -46,7 +46,7 @@ def main():
     target_args.extend(algs_options)
     start_py_path = get_abs_path('target-irace/start.py')
     os.makedirs(os.path.join(settings['run_dir'], run_name), exist_ok=True)
-    target_irace = subprocess.Popen([sys.executable, start_py_path, *target_args], cwd=os.path.join(settings['run_dir'], run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join(settings['run_dir'], run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     subprocess.Popen(['tee', os.path.join(settings['run_dir'], run_name, 'irace-log.txt')], stdin=target_irace.stdout)
     target_irace.wait()
 
