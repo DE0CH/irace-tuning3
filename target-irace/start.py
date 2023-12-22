@@ -37,7 +37,8 @@ def main():
     ]
 
     server_args = [
-        sys.executable, 
+        sys.executable,
+        '-u',
         '-m', 'epm.webserver.flask_server',
         *model_args,
         '--idle_time', '10000000000', #FIXME: figure out how to disable timeout
