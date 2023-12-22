@@ -26,7 +26,6 @@ def main():
     parser.add_argument('--pyrfr_model', type=str, help='Path to the target_algorithm.')
     parser.add_argument('--config_space', type=str, help='Path to the configuration space in pcs format.')
     parser.add_argument('--inst_feat_dict', type=str, help='Path to the instance feature dictionary.')
-    parser.add_argument('--seed', type=int, help='Random seed.') #TODO: Check how to pass the seed, though it might be unnecessary.
     parser.add_argument('--dir', type=str, help='Path for the epm server as a unique identifier for the server. It is also the cwd for irace.', default='.')
     parser.add_argument('irace_options', nargs=argparse.REMAINDER, help='Options passed to irace.')
     args = parser.parse_args()
