@@ -44,6 +44,7 @@ def main():
         '--idle_time', '10000000000', #FIXME: figure out how to disable timeout
         '--pid', '0', # We can also use pid to differenciate but it is not necessary as we use dir.
         '--dir', args.dir,
+        '--nic_name', 'localhost',
     ]
     try:
         os.remove('./nameserver_creds.pkl')

@@ -78,7 +78,7 @@ def one_hot_encode(config, cs):
               for hp in cs.get_hyperparameters()]
 
     transformer = [OneHotEncoder(categories='auto').fit(v.reshape((-1, 1)))
-                   if len(v) is not 0 else None
+                   if len(v) != 0 else None
                    for v in values]
 
     # Create array with one hot encoded values
