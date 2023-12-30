@@ -9,12 +9,12 @@ def get_abs_path(path):
     return os.path.abspath(path)
 
 def main():
+    IRACE_TUNING_PATH = os.environ.get('IRACE_TUNING_PATH', os.path.dirname(os.path.realpath(__file__)))
     configuration_id = sys.argv[1]
     instance_id = sys.argv[2]
     seed = sys.argv[3]
     instance = sys.argv[4]
-    bound_max = sys.argv[5]
-    algs_options = sys.argv[6:]
+    algs_options = sys.argv[5:]
 
     run_name = f"{os.path.basename(os.path.normpath(instance))}-{configuration_id}-{instance_id}-{seed}"
     with open(instance, 'r') as f:
@@ -44,7 +44,7 @@ def main():
         target_args.extend(['--max-time', str(instance['irace_args']['max_time'])])
 
     target_args.extend(algs_options)
-    start_py_path = get_abs_path('target-irace/start.py')
+    start_py_path = get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/start.py'))
     os.makedirs(os.path.join(settings['run_dir'], run_name), exist_ok=True)
     target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join(settings['run_dir'], run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     subprocess.Popen(['tee', os.path.join(settings['run_dir'], run_name, 'irace-log.txt')], stdin=target_irace.stdout)
