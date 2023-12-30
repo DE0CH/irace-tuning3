@@ -1,8 +1,0 @@
-git+https://github.com/automl/GenericWrapper4AC@master
-numpy
-scipy
-tabulate
-matplotlib
-git+https://bitbucket.org/aadfreiburg/plotting_scripts
-ConfigSpace > 0.4
-pandas
