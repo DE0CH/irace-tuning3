@@ -26,7 +26,7 @@ def main():
         '--config_space', get_abs_path(instance['surrogate_args']['config_space']),
         '--inst_feat_dict', get_abs_path(instance['surrogate_args']['inst_feat_dict']),
         '--',
-        '--target-runner', get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner_cost.py') if instance['irace_args']['is_cost'] else os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner_time.py')),
+        '--target-runner', get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner/target/release/target_runner')),
         '--parameter-file', get_abs_path(instance['irace_args']['parameter_file']),
         '--train-instances-file', get_abs_path(instance['irace_args']['train_instances_file']),
         '--train-instances-dir', '/', #FIXME: this is because otherwise it will be relative to the cwd of irace.
