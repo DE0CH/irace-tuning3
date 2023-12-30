@@ -16,12 +16,12 @@ def main():
     bound_max = sys.argv[5]
     algs_options = sys.argv[6:]
 
-    run_name = f"{os.path.splitext(os.path.basename(os.path.normpath(instance)))[0]}-{configuration_id}-{instance_id}-{seed}"
+    run_name = f"{os.path.basename(os.path.normpath(instance))}-{configuration_id}-{instance_id}-{seed}"
     with open(instance, 'r') as f:
         instance = toml.load(f)
     with open('settings.toml', 'r') as f:
         settings = toml.load(f)
-        
+
     target_args = [
         '--pyrfr_wrapper', get_abs_path(instance['surrogate_args']['pyrfr_wrapper']),
         '--pyrfr_model', get_abs_path(instance['surrogate_args']['pyrfr_model']),
