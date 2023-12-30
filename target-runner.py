@@ -19,8 +19,6 @@ def main():
     run_name = f"{os.path.basename(os.path.normpath(instance))}-{configuration_id}-{instance_id}-{seed}"
     with open(instance, 'r') as f:
         instance = toml.load(f)
-    with open('settings.toml', 'r') as f:
-        settings = toml.load(f)
 
     target_args = [
         '--pyrfr_wrapper', get_abs_path(instance['surrogate_args']['pyrfr_wrapper']),
@@ -28,7 +26,7 @@ def main():
         '--config_space', get_abs_path(instance['surrogate_args']['config_space']),
         '--inst_feat_dict', get_abs_path(instance['surrogate_args']['inst_feat_dict']),
         '--',
-        '--target-runner', get_abs_path('target-irace/target_runner_cost.py' if instance['irace_args']['is_cost'] else 'target-irace/target_runner_time.py'),
+        '--target-runner', get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner_cost.py') if instance['irace_args']['is_cost'] else os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner_time.py')),
         '--parameter-file', get_abs_path(instance['irace_args']['parameter_file']),
         '--train-instances-file', get_abs_path(instance['irace_args']['train_instances_file']),
         '--train-instances-dir', '/', #FIXME: this is because otherwise it will be relative to the cwd of irace.
@@ -45,9 +43,9 @@ def main():
 
     target_args.extend(algs_options)
     start_py_path = get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/start.py'))
-    os.makedirs(os.path.join(settings['run_dir'], run_name), exist_ok=True)
-    target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join(settings['run_dir'], run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    subprocess.Popen(['tee', os.path.join(settings['run_dir'], run_name, 'irace-log.txt')], stdin=target_irace.stdout)
+    os.makedirs(os.path.join('runs', run_name), exist_ok=True)
+    target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join('runs', run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    subprocess.Popen(['tee', os.path.join('runs', run_name, 'irace-log.txt')], stdin=target_irace.stdout)
     target_irace.wait()
 
 

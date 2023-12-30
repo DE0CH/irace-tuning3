@@ -3,13 +3,16 @@
 We compare if the prediction from the model is the same as the recorded data provided.
 
 # Dependencies
-- `python3`
+- `python`
+  - Various scripts have shebang `#!/usr/bin/env python` so make sure that starts the python3 you want to use
 - rust with `cargo`
+- `R` with `Rscript`
+- `irace`
 
 # Installation
 
 ```
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate
 ./install.sh
 ```
@@ -18,6 +21,8 @@ source venv/bin/activate
 
 ## Configuration Files
 
+[Example configurations](https://github.com/DE0CH/irace-tuning-configs)
+
 .toml instance files TODO
 settings.toml files TODO
 
@@ -25,10 +30,10 @@ settings.toml files TODO
 
 Usage:
 ```
-irace --target-runner-launcher python3 --target-runner path/to/target-runner.py <remaining irace args>
+irace --target-runner path/to/target-runner.py <remaining irace args>
 ```
 
-Example:
+Example
 ```
 irace --target-runner ../irace-tuning3/target-runner.py --parameter-file parameters.txt --max-experiments 96 --seed 123
 ```
@@ -39,4 +44,4 @@ The location of the scripts for internal use (those not controlled by the user, 
 
 ## Caveat
 
-Do not set the `boundMax` function, it is not supported and will cause undefined behavior.
+Do not set the `boundMax` parameter for meta irace, it is not supported and will cause undefined behavior.

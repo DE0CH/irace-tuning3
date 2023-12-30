@@ -1,2 +1,0 @@
-capping "--capping " i (0, 1)
-boundMax "--bound-max " i (1, 50) | (capping == 1)
