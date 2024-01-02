@@ -78,7 +78,7 @@ def main():
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
         *args.irace_options[1:]
     ]
-    
+
     irace = subprocess.run(irace_args, cwd=args.dir) #TODO: capture and log the data. For some reason if I try to capture the data here the flask_worker just says ERROR:EPM Worker:Server is not running on 127.0.0.1:41391
 
     stopper_args = [
@@ -89,9 +89,12 @@ def main():
         '--dir', args.dir,
         'stop'
     ]
-    subprocess.run(['/bin/bash', '-c', 'kill -15 $(cat ./server.pid)'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if irace.returncode != 0:
         raise RuntimeError('irace failed.')
 
 if __name__ == '__main__':
-    exit(main())
+    os.unlink('./server.pid')
+    try:
+        main()
+    finally:
+        subprocess.run(['/bin/bash', '-c', 'kill -15 $(cat ./server.pid)'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

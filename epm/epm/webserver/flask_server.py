@@ -115,7 +115,6 @@ def create_app(**kwargs):
         app.LAST_REQUEST = time()
 
         if request.method == 'POST':
-
             # TODO: catch receive errors. catch jsonify errors.
             try:
                 json_data = request.get_json()
@@ -147,7 +146,11 @@ def create_app(**kwargs):
             # Return a response in json format
             response = {'result': result.tolist(),
                         'additional': additional.tolist()}
-            return Response(response=str(result[0]),
+            with open('debugging-server.txt', 'w', encoding='utf-8') as f:
+                print(json_data, file=f)
+            res = result[0]
+            res = min(float(json_data['bound']) + 1, result[0])
+            return Response(response=str(res) + '\n' + str(res),
                             status=200,
                             mimetype='application/json')
 

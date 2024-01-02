@@ -14,7 +14,7 @@ fn main() {
         "", // instance_id
         "seed",
         "instance_name",
-        "", // bound_max
+        "bound",
     ].into_iter().zip_longest(std::env::args().into_iter().skip(1));
     let mut m: HashMap<_, String> = a.filter_map::<(&str, String), _>(|x| {match x {
         Both(l, r) => {
