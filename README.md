@@ -45,3 +45,10 @@ The location of the scripts for internal use (those not controlled by the user, 
 ## Caveat
 
 Do not set the `boundMax` parameter for meta irace, it is not supported and will cause undefined behavior.
+
+# Terminologies
+
+meta-irace: the irace instance that selects the irace parameters
+irace: the irace that tunes cplex, minisat, etc.
+irace's target-runner: the target runner called by irace (it will call the surrogate)
+meta-irace's target-runner: the target runner called by meta-irace (it will call irace)
