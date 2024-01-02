@@ -1,4 +1,4 @@
-./epm 
+epm @ git+https://github.com/DE0CH/epm@main
 toml
 watchdog
 rpy2
