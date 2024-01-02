@@ -34,13 +34,7 @@ def create_app(**kwargs):
                      ' This is only activated to speed up testing.')
 
     app.LAST_REQUEST = time()
-    app.IDLE_TIME = kwargs.get('idle_time', 600)
     app.kwargs = kwargs
-
-    cmd = 'python -m epm.webserver.monitor_server --dir {} --idle_time {}'\
-        .format(kwargs.get('dir'), app.IDLE_TIME)
-    logger.info('Start process for server monitor with cmd: {}'.format(cmd))
-    app.watcher_proc = Popen(cmd.split())
 
     @app.route("/predict", methods=['POST'])
     def predict():
@@ -203,10 +197,6 @@ def create_app(**kwargs):
         """
 
         logger.debug('Start Shutdown procedure')
-
-        # kill watcher process
-        logger.info('Kill Server Monitor')
-        app.watcher_proc.terminate()
 
         # clean up server files and release lock
         cwd = pathlib.Path(app.kwargs.get('dir', '.'))
