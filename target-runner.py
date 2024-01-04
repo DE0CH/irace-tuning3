@@ -9,7 +9,12 @@ import shlex
 def extract_from_logfile(logfile):
     quoted_logfile = repr(logfile)
     command = ['Rscript', '-e', f"load({quoted_logfile}); cat(mean(iraceResults$testing$experiment))"]
-    return subprocess.check_output(command).decode('utf-8').strip()
+    res = subprocess.check_output(command).decode('utf-8').strip()
+    try:
+        float(res)
+        return res
+    except ValueError:
+        return 'inf'
 
 def get_abs_path(path):
     return os.path.abspath(path)
@@ -56,9 +61,10 @@ def main():
         target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join(IRACE_TUNING_RUN_DIR, run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         subprocess.Popen(['tee', os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace-log.txt')], stdin=target_irace.stdout, stdout=subprocess.DEVNULL)
         target_irace.wait()
-        if target_irace.returncode != 0:
-            raise RuntimeError(f"target-irace failed with return code {target_irace.returncode}")
-    print(extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')))
+    if target_irace.returncode != 0:
+        print('inf')
+    else:
+        print(extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')))
 
 if __name__ == '__main__':
     main()
