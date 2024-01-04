@@ -4,7 +4,7 @@ import signal
 import sys
 import shlex
 import os
-import time 
+import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from watchdog.events import FileCreatedEvent
@@ -47,11 +47,15 @@ def main():
         '--nic_name', 'localhost',
     ]
     try:
+        os.remove('./server-stopped.log')
+    except OSError:
+        pass
+    try:
         os.remove('./nameserver_creds.pkl')
     except OSError:
-        pass 
-    if os.fork() == 0: #FIXME: Using fork is not ideal, best to use subprocess, but there's a bug when using subprocess. It just stops abitrairly.
-        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > ./server-log.log 2>&1 & echo $! > ./server.pid']) #FIXME: I don't like using shell.
+        pass
+    if os.fork() == 0:
+        os.execv('/bin/sh', ['/bin/sh', '-c', f'{shlex.join(server_args + ["start"])} > ./server-log.log 2>&1 & echo $! > ./server.pid; wait; date > server-stopped.log'])
 
     has_file = Event()
     event_handler = FileCreateHandler(has_file, 'nameserver_creds.pkl')
@@ -62,7 +66,7 @@ def main():
     observer.stop()
     observer.join()
     #TODO: DRY, combine this with the one in tools/data_comparison/wait_for_server.py
-    while True: #FIXME: We need to poll the server to make sure it is running. This is not ideal. This is because nameserver_creds.pkl is created before the server is actually running. I haven't figured out a way to run a command after everything is ready.
+    while True:
         try:
             with open('nameserver_creds.pkl', 'rb') as f:
                 ip, port, _ = pickle.load(f)
@@ -73,6 +77,8 @@ def main():
             pass
         finally:
             time.sleep(0.1)
+        if os.path.exists('./server-stopped.log'):
+            raise RuntimeError('Server stopped unexpectedly.')
 
     irace_args = [
         os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
@@ -100,4 +106,5 @@ if __name__ == '__main__':
     try:
         main()
     finally:
-        subprocess.run(['/bin/bash', '-c', 'kill -15 $(cat ./server.pid)'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if os.path.exists('./server-stopped.log'):
+            subprocess.run(['/bin/sh', '-c', 'kill -15 $(cat ./server.pid)'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
