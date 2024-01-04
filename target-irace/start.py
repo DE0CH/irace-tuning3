@@ -93,7 +93,10 @@ def main():
         raise RuntimeError('irace failed.')
 
 if __name__ == '__main__':
-    os.unlink('./server.pid')
+    try:
+        os.remove('./server.pid')
+    except OSError:
+        pass
     try:
         main()
     finally:
