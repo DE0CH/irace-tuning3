@@ -63,9 +63,9 @@ def main():
     observer.join()
     #TODO: DRY, combine this with the one in tools/data_comparison/wait_for_server.py
     while True: #FIXME: We need to poll the server to make sure it is running. This is not ideal. This is because nameserver_creds.pkl is created before the server is actually running. I haven't figured out a way to run a command after everything is ready.
-        with open('nameserver_creds.pkl', 'rb') as f:
-            ip, port, _ = pickle.load(f)
         try:
+            with open('nameserver_creds.pkl', 'rb') as f:
+                ip, port, _ = pickle.load(f)
             response = requests.get(f'http://{ip}:{port}/status')
             if response.status_code == 200:
                 break
