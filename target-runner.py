@@ -4,17 +4,14 @@ import toml
 import os
 import sys
 import subprocess
-import rpy2.robjects as robjects
+import shlex
 
 def extract_from_logfile(logfile):
-    robjects.r('library(irace)')
-    get_mean = robjects.r('''function (x) {
-        ireaceResults <- read_logfile(x);
-        mean(ireaceResults$testing$experiment)
-    }''')
-    return float(get_mean(logfile)[0])
+    quoted_logfile = repr(logfile)
+    command = ['Rscript', '-e', f"load({quoted_logfile}); cat(mean(iraceResults$testing$experiment))"]
+    return subprocess.check_output(command).decode('utf-8').strip()
 
-def get_abs_path(path): 
+def get_abs_path(path):
     return os.path.abspath(path)
 
 def main():
