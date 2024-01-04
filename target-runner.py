@@ -56,6 +56,8 @@ def main():
         target_irace = subprocess.Popen([sys.executable, "-u", start_py_path, *target_args], cwd=os.path.join(IRACE_TUNING_RUN_DIR, run_name), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         subprocess.Popen(['tee', os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace-log.txt')], stdin=target_irace.stdout, stdout=subprocess.DEVNULL)
         target_irace.wait()
+        if target_irace.returncode != 0:
+            raise RuntimeError(f"target-irace failed with return code {target_irace.returncode}")
     print(extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')))
 
 if __name__ == '__main__':

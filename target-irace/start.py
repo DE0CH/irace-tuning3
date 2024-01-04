@@ -106,5 +106,5 @@ if __name__ == '__main__':
     try:
         main()
     finally:
-        if os.path.exists('./server-stopped.log'):
+        if not os.path.exists('./server-stopped.log'):
             subprocess.run(['/bin/sh', '-c', 'kill -15 $(cat ./server.pid)'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
