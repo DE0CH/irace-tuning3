@@ -98,7 +98,7 @@ def main():
             response = requests.get(f'http://{ip}:{port}/status')
             if response.status_code == 200:
                 break
-        except (requests.exceptions.ConnectionError, FileNotFoundError):
+        except (requests.exceptions.ConnectionError, FileNotFoundError, EOFError):
             pass
         finally:
             time.sleep(0.1)
