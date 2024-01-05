@@ -19,7 +19,7 @@ import requests
 def extract_from_logfile(logfile):
     quoted_logfile = repr(logfile)
     command = ['Rscript', '-e', f"load({quoted_logfile}); cat(mean(iraceResults$testing$experiment))"]
-    p = subprocess.run(command, stderr=subprocess.DEVNULL, capture_output=True, check=False)
+    p = subprocess.run(command, capture_output=True, check=False)
     res = p.stdout.decode('utf-8').strip()
     try:
         float(res)
@@ -57,7 +57,7 @@ def main():
     ]
 
     irace_args = [
-        os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"]).decode('utf-8'), 'irace'),
+        os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"], stderr=subprocess.DEVNULL).decode('utf-8'), 'irace'),
         '--target-runner', get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner/target/release/target_runner')),
         '--parameter-file', get_abs_path(instance['irace_args']['parameter_file']),
         '--train-instances-file', get_abs_path(instance['irace_args']['train_instances_file']),
@@ -76,8 +76,8 @@ def main():
 
     os.makedirs(os.path.join(IRACE_TUNING_RUN_DIR, run_name), exist_ok=True)
     os.chdir(os.path.join(IRACE_TUNING_RUN_DIR, run_name))
-    if os.path.isfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')):
-        res = extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata'))
+    if os.path.isfile('irace.Rdata'):
+        res = extract_from_logfile('irace.Rdata')
         if res != 'inf':
             print(res)
             return
