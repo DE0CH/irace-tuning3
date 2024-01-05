@@ -19,7 +19,8 @@ import requests
 def extract_from_logfile(logfile):
     quoted_logfile = repr(logfile)
     command = ['Rscript', '-e', f"load({quoted_logfile}); cat(mean(iraceResults$testing$experiment))"]
-    res = subprocess.check_output(command, stderr=subprocess.DEVNULL).decode('utf-8').strip()
+    p = subprocess.run(command, stderr=subprocess.DEVNULL, capture_output=True, check=False)
+    res = p.stdout.decode('utf-8').strip()
     try:
         float(res)
         return res
@@ -76,8 +77,10 @@ def main():
     os.makedirs(os.path.join(IRACE_TUNING_RUN_DIR, run_name), exist_ok=True)
     os.chdir(os.path.join(IRACE_TUNING_RUN_DIR, run_name))
     if os.path.isfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')):
-        print(extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata')))
-        return
+        res = extract_from_logfile(os.path.join(IRACE_TUNING_RUN_DIR, run_name, 'irace.Rdata'))
+        if res != 'inf':
+            print(res)
+            return
 
     try:
         os.remove('./nameserver_creds.pkl')
