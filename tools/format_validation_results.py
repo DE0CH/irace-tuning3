@@ -20,21 +20,22 @@ def main():
         instances = f.read().splitlines()
     configurations = [''] + list(get_best_configurations(args.log_file))
     seeds = [str(rng.randrange(10000000, 1000000000)) for _ in range(int(args.n_seed))]
-    results = map(lambda x:
+    with open(args.test_log_file, encoding='utf-8') as f:
+        results_numbers = f.read().splitlines()
+    results = map(lambda y:
         {
-            'configuration_id': x[0],
-            'instance_id': x[1],
-            'configuration': configurations[x[0]],
-            'instance': instances[x[1]],
-            'seed': x[2],
-            'test_instance': instances[x[1]],
-            'test_instance_dir': args.test_instances_dir,
+            'configuration_id': y[1][0],
+            'instance_id': y[1][1],
+            'configuration': configurations[y[1][0]],
+            'instance': instances[y[1][1]],
+            'seed': y[1][2],
+            'cost': results_numbers[y[0]],
         },
-        itertools.product(
+        enumerate(itertools.product(
         range(len(configurations)),
         range(len(instances)),
         seeds,
-    ))
+    )))
     json.dump(list(results), indent=4, fp=sys.stdout)
 
 if __name__ == '__main__':
