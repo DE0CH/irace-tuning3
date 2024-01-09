@@ -66,7 +66,9 @@ def main():
     if 'max_time' in instance['irace_args']:
         irace_args.extend(['--max-time', str(instance['irace_args']['max_time'])])
 
-    os.chdir(os.path.join(IRACE_TUNING_RUN_DIR, run_name))
+    os.chdir(IRACE_TUNING_RUN_DIR)
+    os.makedirs(run_name, exist_ok=True)
+    os.chdir(run_name)
     if os.path.isfile('irace.Rdata'):
         try:
             res = extract_from_logfile('irace.Rdata')
