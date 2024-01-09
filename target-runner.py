@@ -3,16 +3,11 @@ import toml
 import os
 import sys
 import subprocess
-import argparse
 import subprocess
 import signal
 import sys
-import shlex
 import os
 import time
-from watchdog.events import FileSystemEventHandler
-from watchdog.events import FileCreatedEvent
-from threading import Event
 import pickle
 import requests
 
@@ -21,11 +16,8 @@ def extract_from_logfile(logfile):
     command = ['Rscript', '-e', f"load({quoted_logfile}); cat(mean(iraceResults$testing$experiment))"]
     p = subprocess.run(command, capture_output=True, check=False)
     res = p.stdout.decode('utf-8').strip()
-    try:
-        float(res)
-        return res
-    except ValueError:
-        return 'inf'
+    float(res)
+    return res
 
 def get_abs_path(path):
     return os.path.abspath(path)
@@ -57,7 +49,7 @@ def main():
     ]
 
     irace_args = [
-        os.path.join(subprocess.check_output(['Rscript', '-e', "cat(system.file(package=\'irace\', \'bin\', mustWork=TRUE))"], stderr=subprocess.DEVNULL).decode('utf-8'), 'irace'),
+        'irace',
         '--target-runner', get_abs_path(os.path.join(IRACE_TUNING_PATH, 'target-irace/target_runner/target/release/target_runner')),
         '--parameter-file', get_abs_path(instance['irace_args']['parameter_file']),
         '--train-instances-file', get_abs_path(instance['irace_args']['train_instances_file']),
@@ -74,13 +66,16 @@ def main():
     if 'max_time' in instance['irace_args']:
         irace_args.extend(['--max-time', str(instance['irace_args']['max_time'])])
 
-    os.makedirs(os.path.join(IRACE_TUNING_RUN_DIR, run_name), exist_ok=True)
     os.chdir(os.path.join(IRACE_TUNING_RUN_DIR, run_name))
     if os.path.isfile('irace.Rdata'):
-        res = extract_from_logfile('irace.Rdata')
-        if res != 'inf':
-            print(res)
-            return
+        try:
+            res = extract_from_logfile('irace.Rdata')
+            if res != 'inf':
+                print(res)
+                return
+        #pylint: disable=bare-except
+        except:
+            pass
 
     try:
         os.remove('./nameserver_creds.pkl')
@@ -95,6 +90,7 @@ def main():
         try:
             with open('nameserver_creds.pkl', 'rb') as f:
                 ip, port, _ = pickle.load(f)
+            #pylint: disable=missing-timeout
             response = requests.get(f'http://{ip}:{port}/status')
             if response.status_code == 200:
                 break
@@ -111,7 +107,7 @@ def main():
     server_p.send_signal(signal.SIGINT)
 
     if irace_p.returncode != 0:
-        print('inf')
+        raise RuntimeError('irace failed.')
     else:
         print(extract_from_logfile('irace.Rdata'))
 
