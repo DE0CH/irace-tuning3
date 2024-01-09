@@ -7,7 +7,6 @@ from os.path import abspath
 from os.path import join as path_join
 import shlex
 
-rng = random.Random(42)
 
 def get_best_configurations(logfile):
     with open(logfile, 'r', encoding='utf-8') as f:
@@ -21,6 +20,7 @@ def get_best_configurations(logfile):
                 yield line.split(' ', 1)[1].strip()
 
 def main():
+    rng = random.Random(42)
     parser = argparse.ArgumentParser()
     parser.add_argument('--test-instances-file', required=True)
     parser.add_argument('--test-instances-dir', required=True)
