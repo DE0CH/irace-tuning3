@@ -31,7 +31,7 @@ def main():
     instance = sys.argv[4]
     algs_options = sys.argv[5:]
 
-    run_name = f"{os.path.basename(os.path.normpath(instance))}-{configuration_id}-{instance_id}-{seed}"
+    run_name = f"{configuration_id}-{instance_id}-{seed}"
     with open(instance, 'r', encoding='utf-8') as f:
         instance = toml.load(f)
 
