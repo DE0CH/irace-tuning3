@@ -24,8 +24,8 @@ def main():
         results_numbers = f.read().splitlines()
     results = map(lambda y:
         {
-            'configuration_id': y[1][0],
-            'instance_id': y[1][1],
+            'configuration_id': y[1][0] + 1,
+            'instance_id': y[1][1] + 1,
             'configuration': configurations[y[1][0]],
             'instance': instances[y[1][1]],
             'seed': y[1][2],
