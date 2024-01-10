@@ -24,7 +24,7 @@ def get_abs_path(path):
 
 def main():
     IRACE_TUNING_PATH = os.environ.get('IRACE_TUNING_PATH', os.path.dirname(os.path.realpath(__file__)))
-    IRACE_TUNING_RUN_DIR = os.environ.get('IRACE_TUNING_RUN_DIR', 'runs')
+    IRACE_TUNING_RUN_DIR = os.environ['IRACE_TUNING_RUN_DIR']
     configuration_id = sys.argv[1]
     instance_id = sys.argv[2]
     seed = sys.argv[3]
