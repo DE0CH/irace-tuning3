@@ -6,6 +6,7 @@ import random
 import itertools
 import sys
 from generate_validation_commands import get_best_configurations
+from os import path
 
 def main():
     rng = random.Random(42)
@@ -27,7 +28,7 @@ def main():
             'configuration_id': y[1][0] + 1,
             'instance_id': y[1][1] + 1,
             'configuration': configurations[y[1][0]],
-            'instance': instances[y[1][1]],
+            'instance': path.join(args.test_instances_dir, instances[y[1][1]]),
             'seed': seeds[y[0]],
             'cost': results_numbers[y[0]],
         },
