@@ -111,6 +111,19 @@ export IRACE_TUNING_PATH="${{IRACE_TUNING_PATH:-../irace-tuning3}}"
         subprocess.run([f'./jobs/{deps["name"]}/gen.sh'], stdout=f, check=True)
     os.chmod(f'jobs/{deps["name"]}/run.sh', os.stat(f'jobs/{deps["name"]}/run.sh').st_mode | 0o111)
 
+def append_to_download(link, deps):
+    already_exists = False
+    with open('download.sh', encoding='utf-8') as f:
+        for line in f:
+            if link in line:
+                already_exists = True
+                break
+    if not already_exists:
+        with open('download.sh', 'a', encoding='utf-8') as f:
+            f.write(f"curl -OJL {link}\n")
+            f.write(f"unzip {deps['name']}.zip\n")
+            f.write(f"rm -rf {deps['name']}.zip\n")
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("epm_train_url")
@@ -132,13 +145,15 @@ def main():
         run_cmd(['unzip', args.surrogate_url.split('/')[-1]]),
         lambda: find_cutoff_and_wallclock_limit(deps['name']+'/scenario.txt', deps),
         run_cmd(['mkdir', '-p', f"target_instances/surrogate/{deps['name']}"]),
-        run_cmd([sys.executable, '../irace-tuning3/tools/convert_pcs_to_irace.py', f"target_algorithms/surrogate/{deps['name']}/config_space.{deps['name']}.par10.random.pcs", f"target_instances/surrogate/{deps['name']}/config_space.{deps['name']}.par10.random.irace.txt"]),
+        run_cmd([sys.executable, '../irace-tuning3/tools/convert_pcs_to_irace.py', f"target_algorithms/surrogate/{deps['name']}/config_space.{deps['name']}.par10.random.pcs", f"target_instances/surrogate/{deps['name']}/config_space.{deps['name']}.par10.random.irace.txt", "--digit", "10"]),
         lambda: split_instances(deps),
         run_cmd(['mkdir', '-p', f"jobs/{deps['name']}"]),
         lambda: write_tomls(deps),
         lambda: write_jobs_scripts(deps),
+        lambda: append_to_download(args.surrogate_url, deps),
     ]
-
+    if args.step >= len(steps):
+        raise ValueError(f"Invalid step {args.step}")
     for i in range(args.step, len(steps)):
         try:
             steps[i]()
@@ -146,7 +161,8 @@ def main():
             with open(args.deps_file, 'w', encoding='utf-8') as f:
                 json.dump(deps, f, indent=4)
             raise RuntimeError(f"Failed to run step {i}") from exc
-
+    with open(args.deps_file, 'w', encoding='utf-8') as f:
+        json.dump(deps, f, indent=4)
 
 if __name__ == '__main__':
     main()
