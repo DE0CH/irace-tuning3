@@ -98,8 +98,7 @@ def main():
                 break
         except (requests.exceptions.ConnectionError, FileNotFoundError, EOFError):
             pass
-        finally:
-            time.sleep(0.1)
+        time.sleep(0.1)
         if server_p.poll() is not None:
             raise RuntimeError('Server stopped unexpectedly.')
 
