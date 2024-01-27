@@ -40,27 +40,27 @@ IRACE_TUNING_RUN_DIR="${{IRACE_TUNING_RUN_DIR}}/train" irace \\
 
 mkdir -p "${{IRACE_TUNING_RUN_DIR}}/test/train"
 "${{IRACE_TUNING_PATH}}/tools/generate_validation_commands.py" \\
-    --test-instances-dir "${args.train_instances_dir}" \\
-    --test-instances-file "${args.train_instances_file}" \\
-    --target-runner "${args.target_runner}" \\
+    --test-instances-dir "{args.train_instances_dir}" \\
+    --test-instances-file "{args.train_instances_file}" \\
+    --target-runner "{args.target_runner}" \\
     --n-seed 30 \\
-    --log-file "${args.irace_log}" \\
-    | tee "{{IRACE_TUNING_RUN_DIR}}/test/train/test-commands.txt" \\
-    | IRACE_TUNING_RUN_DIR="{{IRACE_TUNING_RUN_DIR}}/train/test" "{{IRACE_TUNING_PATH}}/tools/run_cmds.py" \\
+    --log-file "{args.irace_log}" \\
+    | tee "${{IRACE_TUNING_RUN_DIR}}/test/train/test-commands.txt" \\
+    | IRACE_TUNING_RUN_DIR="${{IRACE_TUNING_RUN_DIR}}/test/train" "${{IRACE_TUNING_PATH}}/tools/run_cmds.py" \\
     --parallel "{args.parallel}" \\
-    > "{{IRACE_TUNING_RUN_DIR}}/test/train/test-log.log"
+    > "${{IRACE_TUNING_RUN_DIR}}/test/train/test-log.log"
 
 mkdir -p "${{IRACE_TUNING_RUN_DIR}}/test/test"
 "${{IRACE_TUNING_PATH}}/tools/generate_validation_commands.py" \\
-    --test-instances-dir "${args.test_instances_dir}" \\
-    --test-instances-file "${args.test_instances_file}" \\
-    --target-runner "${args.target_runner}" \\
+    --test-instances-dir "{args.test_instances_dir}" \\
+    --test-instances-file "{args.test_instances_file}" \\
+    --target-runner "{args.target_runner}" \\
     --n-seed 30 \\
-    --log-file "${args.irace_log}" \\
-    | tee "{{IRACE_TUNING_RUN_DIR}}/test/test/test-commands.txt" \\
-    | IRACE_TUNING_RUN_DIR="{{IRACE_TUNING_RUN_DIR}}/train/test" "{{IRACE_TUNING_PATH}}/tools/run_cmds.py" \\
+    --log-file "{args.irace_log}" \\
+    | tee "${{IRACE_TUNING_RUN_DIR}}/test/test/test-commands.txt" \\
+    | IRACE_TUNING_RUN_DIR="${{IRACE_TUNING_RUN_DIR}}/test/test" "${{IRACE_TUNING_PATH}}/tools/run_cmds.py" \\
     --parallel "{args.parallel}" \\
-    > "{{IRACE_TUNING_RUN_DIR}}/test/test/test-log.log"
+    > "${{IRACE_TUNING_RUN_DIR}}/test/test/test-log.log"
 
 """)
 
